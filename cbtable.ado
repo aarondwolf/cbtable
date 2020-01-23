@@ -2,7 +2,7 @@
 cap program drop cbtable
 program define cbtable
 
-	syntax varname using [, append replace]
+	syntax varname using [, append replace addnote(string)]
 	cap assert ("`append'" == "append" | "`replace'" == "replace")
 		if _rc != 0 {
 			di as error "either {bf:append} or {bf:replace} must be specified."
@@ -21,7 +21,7 @@ program define cbtable
 					p1(fmt(0)) p5(fmt(0)) p10(fmt(0)) p25(fmt(0)) 			///
 					p50(fmt(0)) p75(fmt(0)) p90(fmt(0)) p95(fmt(0)) p99(fmt(0))
 	local tabcells b(label(Freq.)) pct(label(\%) fmt(1))
-	local smcells  sum(label(Selected) fmt(0))	count(label(N) fmt(0)) mean(label(\%) fmt(3)) 
+	local smcells  sum(label(Selected) fmt(0))	count(label(N) fmt(0)) pct(label(\%) fmt(1)) 
 	eststo clear
 	
 		
@@ -65,14 +65,14 @@ program define cbtable
 			}
 		esttab `using', append booktabs cells("`sumcells'") noobs ///
 			nomtitles scalars(`rf' `dn' `na' `er') 	nonumbers title(`title') ///
-			coeflabels(`var' "Value") addnotes(`notes' "Topcoded @ ``var'[topcode_max]'")
+			coeflabels(`var' "Value") addnotes(`notes' "Topcoded @ ``var'[topcode_max]'" "`addnote'")
 	}
 	
 	* select_one
 	if "``var'[CTO_type]'"=="select_one" {
 		estpost tab `var', miss
 		esttab `using', append booktabs cells("`tabcells'") noobs ///
-			label varlabels(`e(labels)') nomtitles nonumbers title(`title') addnotes(`notes')
+			label varlabels(`e(labels)') nomtitles nonumbers title(`title') addnotes(`notes' "`addnote'")
 	}	
 	
 	* select_multiple
@@ -88,8 +88,9 @@ program define cbtable
 			}
 		}
 		estpost sum `vlist'
+			estadd matrix pct = e(mean)*100
 		esttab `using', append booktabs cells("`smcells'") noobs ///
-			label nomtitles	nonumbers title(`title') addnotes(`notes')
+			label nomtitles	nonumbers title(`title') addnotes(`notes' "`addnote'")
 	restore
 	}
 	
@@ -98,7 +99,7 @@ program define cbtable
 	if "``var'[CTO_type]'"=="calculate" {
 		estpost tab `var', miss
 		esttab `using', append booktabs cells("`tabcells'") noobs ///
-			label varlabels(`e(labels)') nomtitles nonumbers title(`title') addnotes(`notes')
+			label varlabels(`e(labels)') nomtitles nonumbers title(`title') addnotes(`notes' "`addnote'")
 	
 	}
 	
@@ -107,7 +108,7 @@ program define cbtable
 		estpost tab `var', miss
 		esttab `using', append booktabs cells("`tabcells'") noobs ///
 			label varlabels(`e(labels)') nomtitles nonumbers title(`title') 	///
-			addnotes("Variable calculated ex post.")
+			addnotes("Variable calculated ex post." "`addnote'")
 		}
 		
 	* Undefined type, but with integer characteristic
@@ -135,7 +136,7 @@ program define cbtable
 			}
 		esttab `using', append booktabs cells("`sumcells'") noobs ///
 			nomtitles scalars(`rf' `dn' `na' `er') 	nonumbers title(`title') ///
-			coeflabels(`var' "Value") addnotes("Variable calculated ex post.")
+			coeflabels(`var' "Value") addnotes("Variable calculated ex post." "`addnote'")
 	}
 
 	eststo clear
