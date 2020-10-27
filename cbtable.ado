@@ -33,7 +33,8 @@ program define cbtable
 	local label = subinstr("`label'","*","",.)
 	local hint = substr(`"``var'[CTO_hint]'"',1,70) + cond(strlen(`"``var'[CTO_hint]'"')>70,"...","")
 	local hint = subinstr(subinstr(`"`hint'"',`"""',"",.),"*","",.)
-	local relevance=cond("``var'[CTO_relevance]'"!="","``var'[CTO_relevance]'","Always Asked")
+	local relevance=cond("``var'[CTO_relevance]'"!="",`"``var'[CTO_relevance]'"',"Always Asked")
+	local relevance = subinstr(`"`relevance'"',`"""',"",.)
 	local relevance = subinstr("`relevance'","&","\&",.)
 	
 	* Notes
