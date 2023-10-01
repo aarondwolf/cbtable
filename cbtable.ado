@@ -1,4 +1,4 @@
-*! version 1.0.1  16sep2019 Aaron Wolf, aaron.wolf@yale.edu
+*! version 1.0.1  16sep2019 Aaron Wolf, aaron.wolf@u.northwestern.edu
 cap program drop cbtable
 program define cbtable
 

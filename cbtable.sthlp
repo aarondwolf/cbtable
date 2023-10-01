@@ -76,6 +76,6 @@ is not installed, {cmd:cbtable} will return an error.
 
 {title:Authors}
 
-{pstd}Aaron Wolf, Yale University{p_end}
-{pstd}aaron.wolf@yale.edu{p_end}
+{pstd}Aaron Wolf, Northwestern University{p_end}
+{pstd}aaron.wolf@u.northwestern.edu{p_end}
 
